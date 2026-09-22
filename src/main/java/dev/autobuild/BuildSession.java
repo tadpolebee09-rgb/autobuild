@@ -124,7 +124,7 @@ public final class BuildSession {
 		LocalPlayer player = mc.player;
 		ClientLevel level = mc.level;
 		if (player == null || level == null || mc.gameMode == null) return;
-		if (mc.screen != null) return; // don't click while a menu is open
+		if (player.containerMenu != player.inventoryMenu) return; // don't click while a menu is open
 		if (swapCooldown > 0) { swapCooldown--; return; }
 
 		Plan plan = chooseNext(mc, player, level, true);
@@ -199,7 +199,7 @@ public final class BuildSession {
 		placingNow = true;
 		try {
 			mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, plan.hit());
-			player.swing(InteractionHand.MAIN_HAND);
+			
 		} finally {
 			placingNow = false;
 		}
