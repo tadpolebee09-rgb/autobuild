@@ -1,0 +1,74 @@
+﻿build	Run gradle build --no-daemon	∩╗┐2026-09-22T00:45:34.3704897Z ##[group]Run gradle build --no-daemon
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3705311Z ^[[36;1mgradle build --no-daemon^[[0m
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3747417Z shell: /usr/bin/bash -e {0}
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3747705Z env:
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3748034Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/25.0.4-1/x64
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3748552Z   JAVA_HOME_25_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/25.0.4-1/x64
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3748991Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3749324Z   GRADLE_USER_HOME: /home/runner/.gradle
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3749636Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3749957Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3750802Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3751320Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3751667Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.3751968Z ##[endgroup]
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9312412Z 
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9317042Z Welcome to Gradle 9.6.0!
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9317712Z 
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9363167Z Here are the highlights of this release:
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9367536Z  - Improved Configuration Cache hit rates
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9368306Z  - Additional CLI rendering options
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9369808Z  - Important project hierarchy lookup deprecations
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9370841Z 
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9372127Z For more details see https://docs.gradle.org/9.6.0/release-notes.html
+build	Run gradle build --no-daemon	2026-09-22T00:45:34.9372844Z 
+build	Run gradle build --no-daemon	2026-09-22T00:45:35.2295739Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.6.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+build	Run gradle build --no-daemon	2026-09-22T00:45:36.7311645Z Daemon will be stopped at the end of the build 
+build	Run gradle build --no-daemon	2026-09-22T00:45:49.4312617Z 
+build	Run gradle build --no-daemon	2026-09-22T00:45:49.4317213Z > Configure project :
+build	Run gradle build --no-daemon	2026-09-22T00:45:49.4318079Z Fabric Loom: 1.17.21
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2308758Z /home/runner/work/autobuild/autobuild/src/main/java/dev/autobuild/BuildSession.java:127: error: cannot find symbol
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2332889Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2333320Z 		if (mc.screen != null) return; // don't click while a menu is open
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2333951Z > Task :compileJava
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2381016Z 		      ^
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2402281Z   symbol:   variable screen
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2431120Z   location: variable mc of type Minecraft
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2441695Z /home/runner/work/autobuild/autobuild/src/main/java/dev/autobuild/BuildSession.java:202: error: method swing in class LivingEntity cannot be applied to given types;
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2454976Z 			player.swing(InteractionHand.MAIN_HAND);
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2491628Z 			      ^
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2510922Z   required: InteractionHand,SwingAnimation,boolean
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2520864Z   found:    InteractionHand
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.2521638Z   reason: actual and formal argument lists differ in length
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.5292480Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.5311255Z 2 errors
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.5311703Z > Task :compileJava FAILED
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6293180Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1790037941160.json
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6294443Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6318038Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6318542Z FAILURE: Build failed with an exception.
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6318918Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6319065Z * What went wrong:
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6319847Z Execution failed for task ':compileJava' (registered by plugin class 'org.gradle.api.plugins.JavaBasePlugin').
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6320873Z > Compilation failed; see the compiler output below.
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6321926Z   /home/runner/work/autobuild/autobuild/src/main/java/dev/autobuild/BuildSession.java:202: error: method swing in class LivingEntity cannot be applied to given types;
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6322674Z   			player.swing(InteractionHand.MAIN_HAND);
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6322975Z   			      ^
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6323716Z     required: InteractionHand,SwingAnimation,boolean
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6324064Z     found:    InteractionHand
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6324388Z     reason: actual and formal argument lists differ in length
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6325014Z   /home/runner/work/autobuild/autobuild/src/main/java/dev/autobuild/BuildSession.java:127: error: cannot find symbol
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6325650Z   		if (mc.screen != null) return; // don't click while a menu is open
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6325999Z   		      ^
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6326204Z     symbol:   variable screen
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6326477Z     location: variable mc of type Minecraft
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6326752Z   2 errors
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6326861Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6326935Z * Try:
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6327217Z > Check your code and dependencies to fix the compilation error(s)
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6327724Z > Run with --scan to get full insights from a Build Scan (powered by Develocity).
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6328036Z 
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6328127Z BUILD FAILED in 30s
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6328691Z [Incubating] Problems report is available at: file:///home/runner/work/autobuild/autobuild/build/reports/problems/problems-report.html
+build	Run gradle build --no-daemon	2026-09-22T00:46:04.6329310Z 1 actionable task: 1 executed
+build	Run gradle build --no-daemon	2026-09-22T00:46:05.0395295Z ##[error]Process completed with exit code 1.
