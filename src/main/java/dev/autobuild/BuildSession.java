@@ -307,7 +307,11 @@ public final class BuildSession {
 		float yaw = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
 		float pitch = (float) (-Math.toDegrees(Math.atan2(dy, horiz)));
 		// Face pointing back toward the player, so the fluid is placed into this block, not the next one.
-		Direction face = Direction.getNearest(eye.x - centre.x, eye.y - centre.y, eye.z - centre.z);
+		double ax = eye.x - centre.x, ay = eye.y - centre.y, az = eye.z - centre.z;
+		Direction face;
+		if (Math.abs(ax) >= Math.abs(ay) && Math.abs(ax) >= Math.abs(az)) { face = ax >= 0 ? Direction.EAST : Direction.WEST; }
+		else if (Math.abs(ay) >= Math.abs(az)) { face = ay >= 0 ? Direction.UP : Direction.DOWN; }
+		else { face = az >= 0 ? Direction.SOUTH : Direction.NORTH; }
 		BlockHitResult hit = new BlockHitResult(centre, face, t.pos, false);
 		return new Plan(t, t.state, bucket, yaw, pitch, hit, true);
 	}
