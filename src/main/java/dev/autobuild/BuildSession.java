@@ -56,8 +56,8 @@ public final class BuildSession {
 		}
 	}
 
-	/** How to place one block: which way to look and where to click. */
-	private record Plan(Target target, BlockState desired, Item item, float yaw, float pitch, BlockHitResult hit) {}
+	/** How to place one block: which way to look and where to click. {@code liquid} means empty a bucket. */
+	private record Plan(Target target, BlockState desired, Item item, float yaw, float pitch, BlockHitResult hit, boolean liquid) {}
 
 	public final Blueprint blueprint;
 	public final BlockPos origin;
@@ -82,7 +82,8 @@ public final class BuildSession {
 				: a.x() != b.x() ? Integer.compare(a.x(), b.x()) : Integer.compare(a.z(), b.z()));
 		for (Blueprint.Entry e : sorted) {
 			if (BlockStates.isAutoPart(e.state())) continue;
-			if (e.state().getBlock().asItem() == Items.AIR) continue; // water, fire, portals...
+			Item bucket = Liquids.bucketFor(e.state()); // water/lava source -> the bucket that places it
+			if (e.state().getBlock().asItem() == Items.AIR && bucket == null) continue; // fire, portals, flowing liquid...
 			targets.add(new Target(origin.offset(e.x(), e.y(), e.z()), e.state()));
 		}
 	}
@@ -124,7 +125,7 @@ public final class BuildSession {
 		LocalPlayer player = mc.player;
 		ClientLevel level = mc.level;
 		if (player == null || level == null || mc.gameMode == null) return;
-		if (player.containerMenu != player.inventoryMenu) return; // don't click while a menu is open
+		if (player.containerMenu != player.inventoryMenu) return; // don't click while a chest/menu is open
 		if (swapCooldown > 0) { swapCooldown--; return; }
 
 		Plan plan = chooseNext(mc, player, level, true);
@@ -163,10 +164,12 @@ public final class BuildSession {
 		if (player == null || level == null) return;
 
 		if (state == State.BUILDING && pending != null && mc.gameMode != null) {
+			boolean wasLiquid = pending.liquid();
 			place(mc, player, pending);
 			Item item = pending.item();
 			// Extra blocks this tick if they use the same item and the same look direction.
-			for (int i = 1; i < speed; i++) {
+			// Never batch liquids: each bucket empties and has to be refilled/re-aimed.
+			for (int i = 1; i < speed && !wasLiquid; i++) {
 				Plan extra = chooseNext(mc, player, level, false);
 				if (extra == null || extra.item() != item
 						|| player.getMainHandItem().getItem() != item) break;
@@ -198,8 +201,12 @@ public final class BuildSession {
 	private void place(Minecraft mc, LocalPlayer player, Plan plan) {
 		placingNow = true;
 		try {
-			mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, plan.hit());
-			
+			if (plan.liquid()) {
+				// A bucket empties with a plain right-click while aimed at the spot.
+				mc.gameMode.useItem(player, InteractionHand.MAIN_HAND);
+			} else {
+				mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, plan.hit());
+			}
 		} finally {
 			placingNow = false;
 		}
@@ -209,10 +216,10 @@ public final class BuildSession {
 		if (BlockStates.matches(now, t.state)) {
 			t.done = true;
 			placed++;
-		} else if (BlockStates.matches(now, plan.desired())) {
+		} else if (!plan.liquid() && BlockStates.matches(now, plan.desired())) {
 			placed++; // first half of a double slab
 		} else {
-			t.retryAt = tick + 5;
+			t.retryAt = tick + (plan.liquid() ? 3 : 5);
 			if (t.attempts >= MAX_ATTEMPTS) t.gaveUp = true;
 		}
 	}
@@ -237,14 +244,17 @@ public final class BuildSession {
 			if (!level.isLoaded(t.pos)) continue;
 			BlockState current = level.getBlockState(t.pos);
 			if (BlockStates.matches(current, t.state)) { t.done = true; continue; }
+			Item bucket = Liquids.bucketFor(t.state);
 			BlockState desired = BlockStates.stage(current, t.state);
+			// A liquid source needs an empty/replaceable spot; a solid block same as before.
 			boolean fillingSlab = current.getBlock() == t.state.getBlock() && desired == t.state;
 			if (!current.canBeReplaced() && !fillingSlab) {
 				if (countStats) blockedNow++;
 				continue;
 			}
-			Item item = t.state.getBlock().asItem();
-			if (!creative && have.getOrDefault(item, 0) <= 0) {
+			Item item = bucket != null ? bucket : t.state.getBlock().asItem();
+			// Buckets are never free, even in creative, so we always need to actually hold one.
+			if ((bucket != null || !creative) && have.getOrDefault(item, 0) <= 0) {
 				if (countStats) missingNow.merge(item, 1, Integer::sum);
 				continue;
 			}
@@ -264,6 +274,13 @@ public final class BuildSession {
 		for (Target t : candidates) {
 			if (++tried > 24) break;
 			BlockState current = level.getBlockState(t.pos);
+			Item bucket = Liquids.bucketFor(t.state);
+			if (bucket != null) {
+				Plan plan = planLiquid(player, level, t, bucket);
+				if (plan != null) return plan;
+				if (countStats) t.retryAt = tick + RETRY_DELAY_TICKS;
+				continue;
+			}
 			BlockState desired = BlockStates.stage(current, t.state);
 			Item item = t.state.getBlock().asItem();
 			ItemStack stack = new ItemStack(item);
@@ -274,6 +291,25 @@ public final class BuildSession {
 			if (countStats) t.retryAt = tick + RETRY_DELAY_TICKS; // can't place yet (needs support, etc.)
 		}
 		return null;
+	}
+
+	/**
+	 * A bucket empties its liquid onto whatever block your crosshair is on. We aim at the target
+	 * position from wherever the player is, using a hit whose block is the target itself, so the
+	 * source lands exactly there.
+	 */
+	private Plan planLiquid(LocalPlayer player, ClientLevel level, Target t, Item bucket) {
+		Vec3 eye = player.getEyePosition();
+		Vec3 centre = new Vec3(t.pos.getX() + 0.5, t.pos.getY() + 0.5, t.pos.getZ() + 0.5);
+		// Look straight at the block centre.
+		double dx = centre.x - eye.x, dy = centre.y - eye.y, dz = centre.z - eye.z;
+		double horiz = Math.sqrt(dx * dx + dz * dz);
+		float yaw = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
+		float pitch = (float) (-Math.toDegrees(Math.atan2(dy, horiz)));
+		// Face pointing back toward the player, so the fluid is placed into this block, not the next one.
+		Direction face = Direction.getNearest(eye.x - centre.x, eye.y - centre.y, eye.z - centre.z);
+		BlockHitResult hit = new BlockHitResult(centre, face, t.pos, false);
+		return new Plan(t, t.state, bucket, yaw, pitch, hit, true);
 	}
 
 	/**
@@ -328,7 +364,7 @@ public final class BuildSession {
 				BlockState result = desired.getBlock().getStateForPlacement(ctx);
 				if (result == null || !result.canSurvive(level, t.pos)) continue;
 				if (BlockStates.matches(result, desired)) {
-					return new Plan(t, desired, item, yaw, pitch, hit);
+					return new Plan(t, desired, item, yaw, pitch, hit, false);
 				}
 			}
 		}
@@ -422,7 +458,9 @@ public final class BuildSession {
 		Map<Item, Integer> map = new HashMap<>();
 		for (Target t : targets) {
 			if (t.done) continue;
-			map.merge(t.state.getBlock().asItem(), BlockStates.itemCost(t.state), Integer::sum);
+			Item bucket = Liquids.bucketFor(t.state);
+			if (bucket != null) map.merge(bucket, 1, Integer::sum);
+			else map.merge(t.state.getBlock().asItem(), BlockStates.itemCost(t.state), Integer::sum);
 		}
 		return map;
 	}

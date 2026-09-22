@@ -23,6 +23,12 @@ It places blocks with normal right-click packets, so it works in singleplayer an
 
 **Sharing builds:** the files are in `.minecraft/autobuilds/`. Copy a `.abuild` file into a friend's `autobuilds` folder and they can `/ab load` it.
 
+**Liquids:** water and lava source blocks in the build are placed automatically, as long as you're
+holding a water or lava bucket. It empties the bucket onto each spot. It can't refill an empty
+bucket (that needs aiming at a source), so bring a few — `/ab materials` tells you how many bucket-loads
+the build needs. Only full source blocks are placed; flowing liquid isn't a real placeable block.
+Waterlogged blocks (like waterlogged stairs) come out wet on their own — they don't need a bucket.
+
 **While building:**
 - It only places blocks within reach (4.5 blocks), so walk around the build as it goes. The action bar tells you what's missing or too far away.
 - It builds the bottom layer first. Blocks that need support, like torches, wait until the support is there.

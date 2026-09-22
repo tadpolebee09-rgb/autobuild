@@ -101,6 +101,11 @@ public final class Blueprint {
 		Map<Item, Integer> map = new HashMap<>();
 		for (Entry e : blocks) {
 			if (BlockStates.isAutoPart(e.state())) continue;
+			Item bucket = Liquids.bucketFor(e.state());
+			if (bucket != null) {
+				map.merge(bucket, 1, Integer::sum); // one bucket-load per source block
+				continue;
+			}
 			Item item = e.state().getBlock().asItem();
 			if (item == Items.AIR) continue;
 			map.merge(item, BlockStates.itemCost(e.state()), Integer::sum);
